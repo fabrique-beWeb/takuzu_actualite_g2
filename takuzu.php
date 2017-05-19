@@ -4,17 +4,19 @@
 $grille = array ();
 //on remplit la grille
 $grille = generateGrid ();
+$nb=0;
 //on affiche la grille fausse normalement
 displayGrid($grille);
 
-//On modifie les lignes horizontales
-$grille = checkGrid ($grille);
-//On tourne le tableau X fois pour checker les verticales
-for ($i = 0; $i < 10000; $i++) {
-    $grille = returnGrid ($grille);
+//on boucle sur la grille en vertical & horizontal
+for ($i = 0; $i < 100; $i++) {
+    $grille = checkGrid($grille);
+    $grille = testlColumnTriplon($grille);
 }
-//On affiche la grille correcte
+
 displayGrid($grille);
+
+//vérifie l'horizontal pour les triplons & les lignes dupliqué
 
 function checkGrid ($grille) {
     for ($i = 0; $i < 8; $i++) {
@@ -26,6 +28,27 @@ function checkGrid ($grille) {
 
     return $grille;
 }
+
+//vérifie la verticale pour les triplons
+
+function testlColumnTriplon ($grille) {
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            if ($j >1 && $grille[$j][$i] == $grille[$j-1][$i] && $grille[$j-1][$i] == $grille[$j-2][$i]) {
+                if ($grille[$j-1][$i] == 0) {
+                    $grille[$j][$i] = 1;
+                    testlColumnTriplon ($grille);
+                } else {
+                    $grille[$j][$i] = 0;
+                    testlColumnTriplon ($grille);
+                }
+            }
+        }
+    }
+
+    return $grille;
+}
+
 
 function testlLine ($line, $i, $grille) {
     for ($j = 1; $j < 8; $j++) {
