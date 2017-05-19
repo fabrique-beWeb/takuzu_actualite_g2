@@ -1,7 +1,8 @@
 <?php
 
-$grille = generate_h();
-$grille = generate_h($grille);
+$nb=0;
+$grille = generate_h($nb);
+$grille = generate_h($nb,$grille);
 
 
 
@@ -27,7 +28,7 @@ function display_grid($grille) {
     }
 }
 
-function generate_h($grille=null) {
+function generate_h($nb,$grille=null) {
 
     for ($i = 0; $i < 8; $i++) {
         $good_grid = true;
@@ -42,9 +43,11 @@ function generate_h($grille=null) {
     }
 
     if(!is_null($grille)) while( $nb < 2) {
+        echo "check grille again\n";
+        echo $nb + "\n";
         if($good_grid = true) $nb ++;
         $grille = return_grid($grille);
-        $grille = generate_h($grille);
+        $grille = generate_h($nb,$grille);
     }
 
     return $grille;
