@@ -1,7 +1,6 @@
 <?php
 
 $grille = array();
-$lignes = array();
 
 for ($i = 0; $i < 8; $i++) {
     $grille[$i] = generate_line ();
@@ -30,12 +29,11 @@ function checkIdenticalLine($nb, $grille, $current_line){
 function generate_line () {
     $line = array();
     while(array_sum($line) != 4 ) {
-        for ($i = 0; $i < 8; $i++) {
-            $line[$i] = rand(0, 1);
-            if ($i > 1 && $line[$i - 1] == $line[$i - 2] && $line[$i - 1] == $line[$i]) {
+        for ($i = 0; $i < 8; $i++) {         
+            if ($i > 1 && $line[$i - 1] == $line[$i - 2]) {
                 if ($line[$i - 1] == 0) $line[$i] = 1;
                 if ($line[$i - 1] == 1) $line[$i] = 0;
-            }
+            }else  $line[$i] = rand(0, 1);
         }
     }
     return $line;
