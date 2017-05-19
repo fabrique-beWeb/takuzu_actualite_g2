@@ -1,97 +1,83 @@
 <?php
 
-$nb=0;
-$grille = array();
-$grille = generate_h($grille);
-display_grid($grille);
-echo "\n";
-$grille = check_grid($grille);
-display_grid($grille);
-
-function check_grid($grille){
-    $grille = return_grid($grille);
-    $grid_wrong = false;
-    echo "\n";
-    display_grid($grille);
-
-    for ($i = 0; $i < 8; $i++) {
-        while(checkIdenticalLine($i, $grille, $grille[$i])) {
-            $grille[$i] = generate_line ();
-            $grid_wrong = true;
-        }
-
-        $grille[$i] = check_triplon($grille[$i]);
-
-    }
-
-    /*sleep(5);*/
-    echo "\n";
-    display_grid($grille);
-
-
-    while($grid_wrong = true) {
-        check_grid($grille);
-    }
-    return $grille;
+$grille = array ();
+$gridTest = 0;
+$grille = generateGrid ();
+displayGrid($grille);
+$grille = checkGrid ($grille);
+$grille = returnGrid ($grille);
+for ($i = 0; $i < 500; $i++) {
+    $grille = returnGrid ($grille);
 }
+displayGrid($grille);
 
-
-function check_triplon($line) {
-    for ($j = 0; $j < 8; $j++) {
-        if ($j > 1 && $line[$j - 1] == $line[$j - 2]) {
-            if ($line[$j - 1] == 0) $line[$j] = 1;
-            else $line[$j] = 0;
-        }else  $line[$j] = rand(0, 1);
-    }
-
-    while (array_sum($line) != 4) { $line = generate_line (); check_triplon($line); }
-    return $line;
-}
-
-function return_grid($grille){
-    $grille2 = array();
-
+function checkGrid ($grille) {
     for ($i = 0; $i < 8; $i++) {
-        for ($j = 0; $j < 8; $j++) {
-            $grille2[$i][$j] = $grille[$j][$i];
-        }
-    }
-    return $grille2;
-}
-
-function display_grid($grille) {
-    for ($i = 0; $i < 8; $i++) {
-        for ($j = 0; $j < 8; $j++) {
-            echo $grille[$i][$j];
-        }
-        echo "\n";
-    }
-}
-
-function generate_h() {
-
-    for ($i = 0; $i < 8; $i++) {
-        $grille[$i] = generate_line ();
-
-        while(checkIdenticalLine($i, $grille, $grille[$i])) {
-            $grille[$i] = generate_line ();
+        if (!checkTriplon($grille[$i]) || !testlLine ($grille[$i], $i, $grille)) {
+            $grille[$i] = generateLine ();
+            checkGrid ($grille);
         }
     }
 
     return $grille;
 }
 
-function checkIdenticalLine($nb, $grille, $current_line){
-    for ($i = 0; $i < $nb; $i++) {
-        if ($grille[$i] === $current_line) {
-            return true;
+function testlLine ($line, $i, $grille) {
+    for ($j = 1; $j < 8; $j++) {
+        if ($i != $j && $line == $grille[$j]) {
+            return false;
         }
     }
-
-    return false;
+    return true;
 }
 
-function generate_line () {
+function checkTriplon($line) {
+    $lineTest = "wrong";
+
+    while( $lineTest == "wrong" ) {
+        for ($i = 0; $i < 8; $i++) {
+            $lineTest = "good";
+
+            if (array_sum($line) != 4) {
+                return false;
+            };
+
+            if ($i > 1 && $line[$i - 1] == $line[$i - 2] && $line[$i - 1] == $line[$i]) {
+                return false;
+            }
+        }
+
+    }
+
+    return true;
+}
+
+// retournement du tableau
+
+function returnGrid($grille){
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            $grille[$i][$j] = $grille[$j][$i];
+        }
+    }
+    $grille = checkGrid ($grille);
+    return $grille;
+}
+
+// Création de la grille + affichage
+
+function generateGrid () {
+
+    $firstGrid = array();
+
+    for ($i = 0; $i < 8; $i++) {
+        $firstGrid[$i] = generateLine ();
+    }
+
+    return $firstGrid;
+}
+
+function generateLine () {
     $line = array();
     while(array_sum($line) != 4 ) {
         for ($i = 0; $i < 8; $i++) {
@@ -102,4 +88,14 @@ function generate_line () {
         }
     }
     return $line;
+}
+
+function displayGrid($grille) {
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            echo $grille[$i][$j];
+        }
+        echo "\n";
+    }
+    echo "\n";
 }
