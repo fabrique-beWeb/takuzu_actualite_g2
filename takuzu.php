@@ -1,14 +1,19 @@
 <?php
 
+//variables
 $grille = array ();
-$gridTest = 0;
+//on remplit la grille
 $grille = generateGrid ();
+//on affiche la grille fausse normalement
 displayGrid($grille);
+
+//On modifie les lignes horizontales
 $grille = checkGrid ($grille);
-$grille = returnGrid ($grille);
-for ($i = 0; $i < 500; $i++) {
+//On tourne le tableau X fois pour checker les verticales
+for ($i = 0; $i < 10000; $i++) {
     $grille = returnGrid ($grille);
 }
+//On affiche la grille correcte
 displayGrid($grille);
 
 function checkGrid ($grille) {
