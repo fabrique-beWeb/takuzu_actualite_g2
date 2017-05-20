@@ -228,12 +228,13 @@ function emptyGrid(){
 }
 
 /**
- * Function returns XML string for input associative array.
- * @param Array $array Input associative array
- * @param String $wrap Wrapping tag
- * @param Boolean $upper To set tags in uppercase
+ * Créé un XML contenant la structure d'une grille de jeux
+ * Contenant numéro de ligne & de case
+ * @param $array la grille de jeux
+ * @param String $wrap Nom de la balise encadrant tout le XML
+ *
  */
-function array2xml($array, $wrap='TAKUZU', $upper=true) {
+function array2xml($array, $wrap='TAKUZU') {
     // set initial value for XML string
     $xml = '';
     // wrap XML with $wrap TAG

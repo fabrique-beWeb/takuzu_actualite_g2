@@ -62,9 +62,9 @@ while ( $compteur < 5 ) {
     $difference_ms = $timestamp_fin - $timestamp_debut;
     echo round($difference_ms, 2) ?> secondes</p>
 <button onclick="generate()">Générer les fichiers</button>
-<script src="jquery-3.2.1.min.js"></script>
-<script src="jspdf.js"></script>
-<script src="html2canvas.js"></script>
+<script src="lib/jquery-3.2.1.min.js"></script>
+<script src="lib/jspdf.js"></script>
+<script src="lib/html2canvas.js"></script>
 <script>
     function generate() {
         html2canvas($('#grille')).then(function (canvas) {
