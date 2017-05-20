@@ -43,3 +43,12 @@ fclose($out);
 $out = fopen("takuzusolution.xml", "w");
 fwrite($out, $grillesolution);
 fclose($out);
+
+$grillejson =  json_encode($grille);
+$grillestartjson = json_encode($grillestart);
+$out = fopen("takuzuafaire.json", "w");
+fwrite($out, $grillestartjson);
+fclose($out);
+$out = fopen("takuzusolution.json", "w");
+fwrite($out, $grillejson);
+fclose($out);
