@@ -4,13 +4,13 @@
     <meta charset="utf-8" />
     <title>Takuzu</title>
 <style>
-td {border: 1px black solid; text-align: center; width: 25px; height: 25px;}
+td {border: 1px black solid; text-align: center; width: 50px; height: 50px;}
 </style>
 </head>
 <body>
 
 <table>
-<tbody>
+<tbody id="grille">
 <?php
 include 'fonctions.php';
 //variables
@@ -59,5 +59,31 @@ while ( $compteur < 5 ) {
 <p>Exécution du script :  <?php $timestamp_fin = microtime(true);
     $difference_ms = $timestamp_fin - $timestamp_debut;
     echo round($difference_ms, 2) ?> secondes</p>
+<button onclick="jpeg()">Fichier Jpeg</button>
+<button onclick="pdf()">Fichier PDF</button>
+<p id="image"></p>
+<script src="jquery-3.2.1.min.js"></script>
+<script src="jspdf.js"></script>
+<script src="html2canvas.js"></script>
+<script>
+    function jpeg() {
+        html2canvas($('#grille')).then(function (canvas) {
+                $(canvas).appendTo($("#image"));
+            },
+            width:600,
+            height:600
+        });
+    }
+    function pdf() {
+        var ladate=new Date()
+        html2canvas($('#grille')).then(function (canvas) {
+            $(canvas).appendTo($("#image"));
+            var pdf = new jsPDF('p','pt','a4');
+            pdf.addImage(canvas, 'JPEG', 0, 0);
+//            $("#image").remove();
+            pdf.save('sample-file.pdf');
+        });
+    }
+</script>
 </body>
 </html>
