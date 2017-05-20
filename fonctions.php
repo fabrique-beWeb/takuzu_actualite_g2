@@ -209,7 +209,7 @@ function startGrid($grille, $nb){
     while($case<$nb){
         $x = rand(0,7);
         $y = rand(0,7);
-        if($grillestart[$x][$y] == ""){
+        if($grillestart[$x][$y] == "_"){
             $grillestart[$x][$y] = $grille[$x][$y];
             $case++;
         }
@@ -221,7 +221,7 @@ function emptyGrid(){
     $grille = array();
     for ($i = 0; $i < 8; $i++) {
         for ($j = 0; $j < 8; $j++) {
-            $grille[$i][$j] = "";
+            $grille[$i][$j] = "_";
         }
     }
     return $grille;
