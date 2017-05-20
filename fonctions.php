@@ -226,3 +226,30 @@ function emptyGrid(){
     }
     return $grille;
 }
+
+/**
+ * Function returns XML string for input associative array.
+ * @param Array $array Input associative array
+ * @param String $wrap Wrapping tag
+ * @param Boolean $upper To set tags in uppercase
+ */
+function array2xml($array, $wrap='TAKUZU', $upper=true) {
+    // set initial value for XML string
+    $xml = '';
+    // wrap XML with $wrap TAG
+    if ($wrap != null) {
+        $xml .= "<$wrap>\n";
+    }
+    for ($i = 0; $i < 8; $i++) {
+        $key = "LIGNE".$i;
+        for ($j = 0; $j < 8; $j++) {
+            $xml .= "<$key>" . $array[$i][$j] . "</$key>";
+        }
+    }
+    // close wrap TAG if needed
+    if ($wrap != null) {
+        $xml .= "\n</$wrap>\n";
+    }
+    // return prepared XML string
+    return $xml;
+}

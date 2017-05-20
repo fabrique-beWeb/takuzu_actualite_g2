@@ -1,6 +1,5 @@
 <?php
 
-include 'arraytoxml.php';
 include 'fonctions.php';
 
 //variables
@@ -34,3 +33,6 @@ echo "\n";
 
 $grillestart = startGrid($grille, 21);
 displayGrid($grillestart);
+echo "\n";
+
+print array2xml($grille);
