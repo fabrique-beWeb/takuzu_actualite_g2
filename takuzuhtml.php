@@ -5,12 +5,10 @@
     <title>Takuzu</title>
 <style>
 td {border: 1px black solid; text-align: center; width: 50px; height: 50px;}
+table { margin-top: 20px;}
 </style>
 </head>
 <body>
-
-<table>
-<tbody id="grille">
 <?php
 include 'fonctions.php';
 include 'arraytoxml.php';
@@ -35,6 +33,29 @@ while ( $compteur < 5 ) {
     if ($bad>1000) { $newGrid++; $grille = generateGrid (); $bad = 0; }
 }
 
+$grillestart = startGrid($grille, 21);
+
+$grillesolution = array2xml($grille);
+$grilleafaire = array2xml($grillestart);
+$out = fopen("takuzuafaire.xml", "w");
+fwrite($out, $grilleafaire);
+fclose($out);
+$out = fopen("takuzusolution.xml", "w");
+fwrite($out, $grillesolution);
+fclose($out);
+
+$grillejson =  json_encode($grille);
+$grillestartjson = json_encode($grillestart);
+$out = fopen("takuzuafaire.json", "w");
+fwrite($out, $grillestartjson);
+fclose($out);
+$out = fopen("takuzusolution.json", "w");
+fwrite($out, $grillejson);
+fclose($out);
+?>
+<table>
+    <tbody id="grillesolution">
+<?php
 	// pour chaque ligne
 	for ($i=0; $i<8; $i++)
     {
@@ -56,6 +77,30 @@ while ( $compteur < 5 ) {
 </tbody>
 </table>
 
+<table>
+    <tbody id="grilleafaire">
+    <?php
+    // pour chaque ligne
+    for ($i=0; $i<8; $i++)
+    {
+        ?>
+        <tr>
+            <?php		// pour chaque colonne (de la ligne)
+            for ($j=0; $j<8; $j++)
+            {
+                ?>		<td>
+                <?php
+                echo $grillestart[$i][$j];
+//                if ($grillestart[$i][$j]== "_") { echo " ";} else {echo $grillestart[$i][$j];};
+                ?>		</td>
+            <?php	} // end for
+            ?>
+        </tr>
+        <?php
+    } // end for
+    ?>
+    </tbody>
+</table>
 <p>On a modifié <?php echo $bad ?> fois la grille</p>
 <p>On a abandonné et regénéré <?php echo $newGrid ?> fois une nouvelle grille</p>
 <p>Exécution du script :  <?php $timestamp_fin = microtime(true);
