@@ -202,3 +202,27 @@ echo "\n";
 }
 echo "\n";
 }
+
+function startGrid($grille, $nb){
+    $case = 0;
+    $grillestart = emptyGrid();
+    while($case<$nb){
+        $x = rand(0,7);
+        $y = rand(0,7);
+        if($grillestart[$x][$y] == ""){
+            $grillestart[$x][$y] = $grille[$x][$y];
+            $case++;
+        }
+    }
+    return $grillestart;
+}
+
+function emptyGrid(){
+    $grille = array();
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            $grille[$i][$j] = "";
+        }
+    }
+    return $grille;
+}
