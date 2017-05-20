@@ -1,26 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>Takuzu</title>
-<style>
-td {border: 1px black solid; text-align: center; width: 50px; height: 50px;}
-</style>
-</head>
-<body>
-
-<table>
-<tbody id="grille">
 <?php
-include 'fonctions.php';
+
+include 'arraytoxml.php';
+
 //variables
 $grille = array ();
 $compteur = 0;
 $bad = 0;
 $newGrid = 0;
-$timestamp_debut = microtime(true);
 //on remplit la grille
 $grille = generateGrid ();
+echo "\n";
+echo "Calcul en cours ... on attend ...";
+echo "\n\n";
 //tant que le compteur de tableau non modifié est inférieur à 5 on tourne la grille et on check
 while ( $compteur < 5 ) {
     $grille = modifyGrid($grille);
@@ -31,59 +22,215 @@ while ( $compteur < 5 ) {
         $compteur = 0;
         $bad++;
     }
-    if ($bad>1000) { $newGrid++; $grille = generateGrid (); $bad = 0; }
+    if ($bad>1500) { $newGrid++; $grille = generateGrid (); $bad = 0; }
 }
-	// pour chaque ligne
-	for ($i=0; $i<8; $i++)
-    {
-        ?>
-        <tr>
-            <?php		// pour chaque colonne (de la ligne)
-            for ($j=0; $j<8; $j++)
-            {
-                ?>		<td>
-                <?php
-                echo $grille[$i][$j];
-                ?>		</td>
-            <?php	} // end for
-            ?>
-        </tr>
-        <?php
-    } // end for
-?>
-</tbody>
-</table>
+//on affiche la grille correcte
+displayGrid($grille);
+echo "On a modifié ".$bad." fois la grilles";
+echo "\n";
+echo "On a abandonné et regénéré ".$newGrid." fois une nouvelle grille";
+echo "\n";
 
-<p>On a modifié <?php echo $bad ?> fois la grille</p>
-<p>On a abandonné et regénéré <?php echo $newGrid ?> fois une nouvelle grille</p>
-<p>Exécution du script :  <?php $timestamp_fin = microtime(true);
-    $difference_ms = $timestamp_fin - $timestamp_debut;
-    echo round($difference_ms, 2) ?> secondes</p>
-<button onclick="jpeg()">Fichier Jpeg</button>
-<button onclick="pdf()">Fichier PDF</button>
-<p id="image"></p>
-<script src="jquery-3.2.1.min.js"></script>
-<script src="jspdf.js"></script>
-<script src="html2canvas.js"></script>
-<script>
-    function jpeg() {
-        html2canvas($('#grille')).then(function (canvas) {
-                $(canvas).appendTo($("#image"));
-            },
-            width:600,
-            height:600
-        });
+/**
+ * Modifie les lignes de la grille qui sont incorrectes.
+ * Les triplons de chiffres
+ * Les lignes qui ne sont pas égales à 4
+ * Les lignes identiques
+ *
+ * @param la grille de jeux à tester
+ *
+ * @return la grille modifiée
+ */
+function modifyGrid ($grille) {
+    for ($i = 0; $i < 8; $i++) {
+        if (!checkTriplon($grille[$i])) {
+            $grille[$i] = modifyTriplon($grille[$i]);
+        }
+
+        if (!testLine ($grille[$i], $i, $grille)) {
+            while(!testLine ($grille[$i], $i, $grille)) {
+                $grille[$i] = generateLine();
+            }
+        }
     }
-    function pdf() {
-        var ladate=new Date()
-        html2canvas($('#grille')).then(function (canvas) {
-            $(canvas).appendTo($("#image"));
-            var pdf = new jsPDF('p','pt','a4');
-            pdf.addImage(canvas, 'JPEG', 0, 0);
-//            $("#image").remove();
-            pdf.save('sample-file.pdf');
-        });
+
+    return $grille;
+}
+
+
+
+/**
+ * Modifie une ligne qui contient des triplons ou n'est pas égales à 4
+ *
+ * @param la ligne de la grille à modifier
+ *
+ * @return la ligne modifiée
+ */
+function modifyTriplon($line) {
+    $lineTest = "wrong";
+    while( $lineTest == "wrong" ) {
+
+        for ($i = 0; $i < 8; $i++) {
+            $lineTest = "good";
+            while(array_sum($line) != 4 ) {
+                if (array_sum($line) != 4) {
+                    $line = generateLine();
+                }
+            }
+            if ($i > 1) {
+                while ($line[$i - 1] == $line[$i - 2] && $line[$i] == $line[$i - 1]) {
+                    if ($line[$i - 1] == 0) $line[$i] = 1;
+                    else $line[$i] = 0;
+                    $lineTest = "wrong";
+                }
+            }
+        }
     }
-</script>
-</body>
-</html>
+
+    return $line;
+}
+
+/**
+ * Vérifie si les lignes de la grille sont correctes.
+ * Pas de triplon sur chaque ligne
+ * Chaque ligne est égale à 4
+ * Pas 2 lignes identiques
+ *
+ * @param la grille de jeux à tester
+ *
+ * @return boolean
+ */
+function checkGridCorrect ($grille) {
+    for ($i = 0; $i < 8; $i++) {
+        if ( !checkTriplon($grille[$i]) ) {
+            return false;
+        }
+
+        if ( !testLine ($grille[$i], $i, $grille) ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Retourne le tableau afin que les lignes deviennent les colonnes
+ * 90° à droite
+ *
+ * @param la grille de jeux à retourner
+ *
+ * @return la grille retournée
+ */
+function returnGrid($grille){
+    $grilleTemp = $grille;
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            $grilleTemp[$j][7-$i] = $grille[$i][$j];
+        }
+    }
+    return $grilleTemp;
+}
+
+//Fonctions de test
+
+/**
+ * Vérifie si une ligne est égale à une autre ligne de la grille
+ *
+ * @param la ligne de la grille à tester
+ *
+ * @return boulean
+ */
+function testLine ($line, $i, $grille) {
+    for ($j = 0; $j < 8; $j++) {
+        if ($i != $j && $line == $grille[$j]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+/**
+ * Vérifie si une ligne contient des triplons de chiffre
+ *
+ * @param la ligne de la grille à tester
+ *
+ * @return boulean
+ */
+function checkTriplon($line) {
+    $lineTest = "wrong";
+    while( $lineTest == "wrong" ) {
+        for ($i = 0; $i < 8; $i++) {
+            $lineTest = "good";
+            if (array_sum($line) != 4) {
+                return false;
+            };
+
+            if ($i > 1 && $line[$i - 1] == $line[$i - 2] && $line[$i - 1] == $line[$i]) {
+                return false;
+            }
+        }
+
+    }
+
+    return true;
+}
+
+//Fonctions de génération de grille ou ligne
+
+/**
+ * Génère un tableau de 8x8 contenant des 1 & des 0
+ *
+ * @param void
+ *
+ * @return la grille générée
+ */
+
+function generateGrid () {
+
+    $firstGrid = array();
+
+    for ($i = 0; $i < 8; $i++) {
+        $firstGrid[$i] = generateLine ();
+    }
+
+    return $firstGrid;
+}
+
+/**
+ * Génère un tableau de 8 contenant des 1 & des 0
+ * Représente une ligne de la grille de jeux
+ *
+ * @param void
+ *
+ * @return la ligne générée
+ */
+function generateLine () {
+    $line = array();
+    while(array_sum($line) != 4 ) {
+        for ($i = 0; $i < 8; $i++) {
+            if ($i > 1 && $line[$i - 1] == $line[$i - 2]) {
+                if ($line[$i - 1] == 0) $line[$i] = 1;
+                else $line[$i] = 0;
+            }else  $line[$i] = rand(0, 1);
+        }
+    }
+    return $line;
+}
+
+/**
+ * Affiche la grille de jeux
+ *
+ * @param un tableau de 8x8 representant la grille de jeux
+ *
+ * @return la grille de jeux
+ */
+function displayGrid($grille) {
+    for ($i = 0; $i < 8; $i++) {
+        for ($j = 0; $j < 8; $j++) {
+            echo $grille[$i][$j]." ";
+        }
+        echo "\n";
+    }
+    echo "\n";
+}
