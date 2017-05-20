@@ -21,8 +21,6 @@ $newGrid = 0;
 $timestamp_debut = microtime(true);
 //on remplit la grille
 $grille = generateGrid ();
-echo "\n";
-echo "Calcul en cours ... on attend ...\n\n";
 //tant que le compteur de tableau non modifié est inférieur à 5 on tourne la grille et on check
 while ( $compteur < 5 ) {
     $grille = modifyGrid($grille);
@@ -36,12 +34,12 @@ while ( $compteur < 5 ) {
     if ($bad>1000) { $newGrid++; $grille = generateGrid (); $bad = 0; }
 }
 	// pour chaque ligne
-	for ($i=1; $i<8; $i++)
+	for ($i=0; $i<8; $i++)
     {
         ?>
         <tr>
             <?php		// pour chaque colonne (de la ligne)
-            for ($j=1; $j<8; $j++)
+            for ($j=0; $j<8; $j++)
             {
                 ?>		<td>
                 <?php
@@ -56,12 +54,10 @@ while ( $compteur < 5 ) {
 </tbody>
 </table>
 
+<p>On a modifié <?php echo $bad ?> fois la grille</p>
+<p>On a abandonné et regénéré <?php echo $newGrid ?> fois une nouvelle grille</p>
+<p>Exécution du script :  <?php $timestamp_fin = microtime(true);
+    $difference_ms = $timestamp_fin - $timestamp_debut;
+    echo round($difference_ms, 2) ?> secondes</p>
 </body>
 </html>
-
-<?php
-echo "On a modifié ".$bad." fois la grille\n";
-echo "On a abandonné et regénéré ".$newGrid." fois une nouvelle grille\n";
-$timestamp_fin = microtime(true);
-$difference_ms = $timestamp_fin - $timestamp_debut;
-echo "Exécution du script : " . round($difference_ms, 2) . " secondes\n";
