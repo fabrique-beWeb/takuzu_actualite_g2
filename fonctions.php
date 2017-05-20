@@ -241,10 +241,15 @@ function array2xml($array, $wrap='TAKUZU', $upper=true) {
         $xml .= "<$wrap>\n";
     }
     for ($i = 0; $i < 8; $i++) {
-        $key = "LIGNE".$i;
+        $key = "LIGNE ";
+        $key .= $i+1;
+        $xml .= "<$key>";
         for ($j = 0; $j < 8; $j++) {
-            $xml .= "<$key>" . $array[$i][$j] . "</$key>";
+            $case = "CASE ";
+            $case .= $j+1;
+            $xml .= "<$case>" . $array[$i][$j] . "</$case>";
         }
+        $xml .= "</$key>";
     }
     // close wrap TAG if needed
     if ($wrap != null) {
