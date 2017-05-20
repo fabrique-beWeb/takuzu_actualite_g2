@@ -16,3 +16,7 @@
 - [X]Générer fichier xml
 - [X]Générer fichier json
 - [X]Générer image ou pdf
+
+### fonctions.php : toutes les fonctions utilisées
+### main.php : 1ère version
+### repertoire lib : contient les librairies nécessaires pour générer le pdf pour takuzuhtml.php
