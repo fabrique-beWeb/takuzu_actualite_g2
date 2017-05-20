@@ -4,30 +4,35 @@
 $grille = array ();
 //on remplit la grille
 $grille = generateGrid ();
-$nb=0;
 //on affiche la grille fausse normalement
 displayGrid($grille);
 
-//on boucle sur la grille en vertical & horizontal
-for ($i = 0; $i < 100; $i++) {
+for ($i = 0; $i < 500000; $i++) {
+    $grille = returnGrid($grille);
     $grille = checkGrid($grille);
-    $grille = testlColumnTriplon($grille);
 }
 
 displayGrid($grille);
 
-//vérifie l'horizontal pour les triplons & les lignes dupliqué
-
 function checkGrid ($grille) {
+    $correct = true;
     for ($i = 0; $i < 8; $i++) {
-        if (!checkTriplon($grille[$i]) || !testlLine ($grille[$i], $i, $grille)) {
-            $grille[$i] = generateLine ();
-            checkGrid ($grille);
+        if (!checkTriplon($grille[$i])) {
+            $grille[$i] = modifyTriplon($grille[$i]);
+        }
+
+        if (!testlLine ($grille[$i], $i, $grille)) {
+            while(!testlLine ($grille[$i], $i, $grille)) {
+                $grille[$i] = generateLine();
+            }
         }
     }
 
+//    while ($correct == false) { $grille = checkGrid($grille); }
     return $grille;
 }
+
+
 
 //vérifie la verticale pour les triplons
 
@@ -49,9 +54,8 @@ function testlColumnTriplon ($grille) {
     return $grille;
 }
 
-
 function testlLine ($line, $i, $grille) {
-    for ($j = 1; $j < 8; $j++) {
+    for ($j = 0; $j < 8; $j++) {
         if ($i != $j && $line == $grille[$j]) {
             return false;
         }
@@ -59,13 +63,35 @@ function testlLine ($line, $i, $grille) {
     return true;
 }
 
+function modifyTriplon($line) {
+    $lineTest = "wrong";
+    while( $lineTest == "wrong" ) {
+
+        for ($i = 0; $i < 8; $i++) {
+            $lineTest = "good";
+            while(array_sum($line) != 4 ) {
+                if (array_sum($line) != 4) {
+                    $line = generateLine();
+                }
+            }
+            if ($i > 1) {
+                while ($line[$i - 1] == $line[$i - 2] && $line[$i] == $line[$i - 1]) {
+                    if ($line[$i - 1] == 0) $line[$i] = 1;
+                    else $line[$i] = 0;
+                    $lineTest = "wrong";
+                }
+            }
+        }
+    }
+
+    return $line;
+}
+
 function checkTriplon($line) {
     $lineTest = "wrong";
-
     while( $lineTest == "wrong" ) {
         for ($i = 0; $i < 8; $i++) {
             $lineTest = "good";
-
             if (array_sum($line) != 4) {
                 return false;
             };
@@ -83,13 +109,13 @@ function checkTriplon($line) {
 // retournement du tableau
 
 function returnGrid($grille){
+    $grilleTemp = $grille;
     for ($i = 0; $i < 8; $i++) {
         for ($j = 0; $j < 8; $j++) {
-            $grille[$i][$j] = $grille[$j][$i];
+            $grilleTemp[$j][7-$i] = $grille[$i][$j];
         }
     }
-    $grille = checkGrid ($grille);
-    return $grille;
+    return $grilleTemp;
 }
 
 // Création de la grille + affichage
