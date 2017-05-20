@@ -166,7 +166,7 @@ function generateLine () {
 function displayGrid($grille) {
     for ($i = 0; $i < 8; $i++) {
         for ($j = 0; $j < 8; $j++) {
-            echo $grille[$i][$j];
+            echo $grille[$i][$j]." ";
         }
         echo "\n";
     }
