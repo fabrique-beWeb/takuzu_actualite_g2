@@ -2,20 +2,42 @@
 
 //variables
 $grille = array ();
+$compteur = 0;
 //on remplit la grille
 $grille = generateGrid ();
 //on affiche la grille fausse normalement
 displayGrid($grille);
+//for ($i = 0; $i < 500000; $i++) {
+//    $grille = checkGrid($grille);
+//    $grille = returnGrid($grille);
+//}
 
-for ($i = 0; $i < 500000; $i++) {
-    $grille = returnGrid($grille);
+while ( $compteur < 10 ) {
     $grille = checkGrid($grille);
+    $grille = returnGrid($grille);
+    if (checkGridCorrect($grille)) {
+        $compteur++;
+    } else {
+        $compteur = 0;
+    }
 }
-
 displayGrid($grille);
 
+function checkGridCorrect ($grille) {
+    for ($i = 0; $i < 8; $i++) {
+        if ( !checkTriplon($grille[$i]) ) {
+            return false;
+        }
+
+        if ( !testlLine ($grille[$i], $i, $grille) ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 function checkGrid ($grille) {
-    $correct = true;
     for ($i = 0; $i < 8; $i++) {
         if (!checkTriplon($grille[$i])) {
             $grille[$i] = modifyTriplon($grille[$i]);
@@ -28,11 +50,8 @@ function checkGrid ($grille) {
         }
     }
 
-//    while ($correct == false) { $grille = checkGrid($grille); }
     return $grille;
 }
-
-
 
 //vérifie la verticale pour les triplons
 
