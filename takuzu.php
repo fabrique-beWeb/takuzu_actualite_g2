@@ -3,8 +3,13 @@
 //variables
 $grille = array ();
 $compteur = 0;
+$bad = 0;
+$newGrid = 0;
 //on remplit la grille
 $grille = generateGrid ();
+echo "\n";
+echo "Calcul en cours ... on attend ...";
+echo "\n\n";
 //tant que le compteur de tableau non modifié est inférieur à 5 on tourne la grille et on check
 while ( $compteur < 5 ) {
     $grille = modifyGrid($grille);
@@ -13,11 +18,16 @@ while ( $compteur < 5 ) {
         $compteur++;
     } else {
         $compteur = 0;
+        $bad++;
     }
+    if ($bad>1500) { $newGrid++; $grille = generateGrid (); $bad = 0; }
 }
 //on affiche la grille correcte
 displayGrid($grille);
-
+echo "On a modifié ".$bad." fois la grilles";
+echo "\n";
+echo "On a abandonné et regénéré ".$newGrid." fois une nouvelle grille";
+echo "\n";
 
 /**
  * Modifie les lignes de la grille qui sont incorrectes.
