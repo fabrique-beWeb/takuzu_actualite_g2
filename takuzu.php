@@ -35,4 +35,11 @@ $grillestart = startGrid($grille, 21);
 displayGrid($grillestart);
 echo "\n";
 
-print array2xml($grille);
+$grillesolution = array2xml($grille);
+$grilleafaire = array2xml($grillestart);
+$out = fopen("takuzuafaire.xml", "w");
+fwrite($out, $grilleafaire);
+fclose($out);
+$out = fopen("takuzusolution.xml", "w");
+fwrite($out, $grillesolution);
+fclose($out);
