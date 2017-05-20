@@ -7,13 +7,10 @@ $compteur = 0;
 $grille = generateGrid ();
 //on affiche la grille fausse normalement
 displayGrid($grille);
-//for ($i = 0; $i < 500000; $i++) {
-//    $grille = checkGrid($grille);
-//    $grille = returnGrid($grille);
-//}
 
-while ( $compteur < 10 ) {
-    $grille = checkGrid($grille);
+//tant que le compteur de tableau non modifié est inférieur à 5 on tourne la grille et on check
+while ( $compteur < 5 ) {
+    $grille = modifyGrid($grille);
     $grille = returnGrid($grille);
     if (checkGridCorrect($grille)) {
         $compteur++;
@@ -23,13 +20,23 @@ while ( $compteur < 10 ) {
 }
 displayGrid($grille);
 
+/**
+ * Vérifie si les lignes de la grille sont correctes.
+ * Pas de triplon sur chaque ligne
+ * Chaque ligne est égale à 4
+ * Pas 2 lignes identiques
+ *
+ * @param la grille de jeux à tester
+ *
+ * @return boolean
+ */
 function checkGridCorrect ($grille) {
     for ($i = 0; $i < 8; $i++) {
         if ( !checkTriplon($grille[$i]) ) {
             return false;
         }
 
-        if ( !testlLine ($grille[$i], $i, $grille) ) {
+        if ( !testLine ($grille[$i], $i, $grille) ) {
             return false;
         }
     }
@@ -37,14 +44,24 @@ function checkGridCorrect ($grille) {
     return true;
 }
 
-function checkGrid ($grille) {
+/**
+ * Modifie les lignes de la grille qui sont incorrectes.
+ * Les triplons de chiffres
+ * Les lignes qui ne sont pas égales à 4
+ * Les lignes identiques
+ *
+ * @param la grille de jeux à tester
+ *
+ * @return la grille modifiée
+ */
+function modifyGrid ($grille) {
     for ($i = 0; $i < 8; $i++) {
         if (!checkTriplon($grille[$i])) {
             $grille[$i] = modifyTriplon($grille[$i]);
         }
 
-        if (!testlLine ($grille[$i], $i, $grille)) {
-            while(!testlLine ($grille[$i], $i, $grille)) {
+        if (!testLine ($grille[$i], $i, $grille)) {
+            while(!testLine ($grille[$i], $i, $grille)) {
                 $grille[$i] = generateLine();
             }
         }
@@ -53,27 +70,14 @@ function checkGrid ($grille) {
     return $grille;
 }
 
-//vérifie la verticale pour les triplons
-
-function testlColumnTriplon ($grille) {
-    for ($i = 0; $i < 8; $i++) {
-        for ($j = 0; $j < 8; $j++) {
-            if ($j >1 && $grille[$j][$i] == $grille[$j-1][$i] && $grille[$j-1][$i] == $grille[$j-2][$i]) {
-                if ($grille[$j-1][$i] == 0) {
-                    $grille[$j][$i] = 1;
-                    testlColumnTriplon ($grille);
-                } else {
-                    $grille[$j][$i] = 0;
-                    testlColumnTriplon ($grille);
-                }
-            }
-        }
-    }
-
-    return $grille;
-}
-
-function testlLine ($line, $i, $grille) {
+/**
+ * Vérifie si une ligne est égale à une autre ligne de la grille
+ *
+ * @param la ligne de la grille à tester
+ *
+ * @return boulean
+ */
+function testLine ($line, $i, $grille) {
     for ($j = 0; $j < 8; $j++) {
         if ($i != $j && $line == $grille[$j]) {
             return false;
@@ -82,6 +86,13 @@ function testlLine ($line, $i, $grille) {
     return true;
 }
 
+/**
+ * Modifie une ligne qui contient des triplons ou n'est pas égales à 4
+ *
+ * @param la ligne de la grille à modifier
+ *
+ * @return la ligne modifiée
+ */
 function modifyTriplon($line) {
     $lineTest = "wrong";
     while( $lineTest == "wrong" ) {
@@ -106,6 +117,13 @@ function modifyTriplon($line) {
     return $line;
 }
 
+/**
+ * Vérifie si une ligne contient des triplons de chiffre
+ *
+ * @param la ligne de la grille à tester
+ *
+ * @return boulean
+ */
 function checkTriplon($line) {
     $lineTest = "wrong";
     while( $lineTest == "wrong" ) {
@@ -125,8 +143,14 @@ function checkTriplon($line) {
     return true;
 }
 
-// retournement du tableau
-
+/**
+ * Retourne le tableau afin que les lignes deviennent les colonnes
+ * 90° à droite
+ *
+ * @param la grille de jeux à retourner
+ *
+ * @return la grille retournée
+ */
 function returnGrid($grille){
     $grilleTemp = $grille;
     for ($i = 0; $i < 8; $i++) {
@@ -137,7 +161,13 @@ function returnGrid($grille){
     return $grilleTemp;
 }
 
-// Création de la grille + affichage
+/**
+ * Génère un tableau de 8x8 contenant des 1 & des 0
+ *
+ * @param void
+ *
+ * @return la grille générée
+ */
 
 function generateGrid () {
 
@@ -150,6 +180,14 @@ function generateGrid () {
     return $firstGrid;
 }
 
+/**
+ * Génère un tableau de 8 contenant des 1 & des 0
+ * Représente une ligne de la grille de jeux
+ *
+ * @param void
+ *
+ * @return la ligne générée
+ */
 function generateLine () {
     $line = array();
     while(array_sum($line) != 4 ) {
@@ -163,6 +201,13 @@ function generateLine () {
     return $line;
 }
 
+/**
+ * Affiche la grille de jeux
+ *
+ * @param un tableau de 8x8 representant la grille de jeux
+ *
+ * @return la grille de jeux
+ */
 function displayGrid($grille) {
     for ($i = 0; $i < 8; $i++) {
         for ($j = 0; $j < 8; $j++) {
