@@ -34,3 +34,5 @@ echo "\n";
 
 $grillestart = startGrid($grille, 21);
 displayGrid($grillestart);
+$grillejson =  json_encode($grille);
+$grillestartjson = json_encode($grillestart);
