@@ -13,6 +13,6 @@
 ## takuzuhtml.php : version navigateur
 - [X]Générer une grille de jeux correcte
 - [X]Générer la grille de jeux à trous
-- [ ]Générer fichier xml
-- [ ]Générer fichier json
+- [X]Générer fichier xml
+- [X]Générer fichier json
 - [X]Générer image ou pdf
